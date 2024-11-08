@@ -3,6 +3,7 @@ package opp.project.t4;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.UUID;
+import opp.project.t4.exceptions.ColumnNotFoundException;
 import org.junit.jupiter.api.Test;
 
 class ColumnTest {
@@ -38,5 +39,21 @@ class ColumnTest {
         expectedOutput,
         column.toString(),
         "Column's toString method should return formatted task list");
+    // Check if the actual output matches the expected output
+    assertEquals(
+        expectedOutput,
+        column.toString(),
+        "Column's toString method should return formatted task list");
+  }
+
+  @Test
+  public void testColumnNotFound() {
+    column = new Column("This is some bs");
+
+    assertThrows(
+        ColumnNotFoundException.class,
+        () -> {
+          column.removeTask(task1);
+        });
   }
 }

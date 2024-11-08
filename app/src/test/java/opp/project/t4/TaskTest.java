@@ -1,8 +1,12 @@
 package opp.project.t4;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
+import opp.project.t4.exceptions.TaskNotFoundException;
 import org.junit.jupiter.api.Test;
 
 class TaskTest {
@@ -50,5 +54,20 @@ class TaskTest {
     // Test the setPriority method by updating the priority
     task.setPriority(Priority.MEDIUM);
     assertEquals(Priority.MEDIUM, task.getPriority(), "Priority should be updated to 'MEDIUM'");
+  }
+
+  @Test
+  public void testFindTaskById_TaskNotFound() {
+    List<Task> tasks = new ArrayList<>();
+    tasks.add(new Task("Task 1", "Description for Task 1", id, Priority.HIGH));
+    tasks.add(new Task("Task 2", "Description for Task 2", id, Priority.MEDIUM));
+    tasks.add(new Task("Task 3", "Description for Task 3", id, Priority.LOW));
+
+    assertThrows(
+        TaskNotFoundException.class,
+        () -> {
+          Task.findTaskById(tasks, "4");
+        },
+        "Task with ID 4 should not be found and an exception should be thrown.");
   }
 }

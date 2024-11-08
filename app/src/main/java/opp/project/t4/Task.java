@@ -1,6 +1,8 @@
 package opp.project.t4;
 
+import java.util.List;
 import java.util.UUID;
+import opp.project.t4.exceptions.TaskNotFoundException;
 
 public class Task {
   private String title;
@@ -53,5 +55,14 @@ public class Task {
         + "Priority: "
         + priority
         + "\n";
+  }
+
+  public static Task findTaskById(List<Task> tasks, String id) throws TaskNotFoundException {
+    for (Task task : tasks) {
+      if (task.getId().equals(id)) {
+        return task;
+      }
+    }
+    throw new TaskNotFoundException("Task with ID " + id + " not found.");
   }
 }
