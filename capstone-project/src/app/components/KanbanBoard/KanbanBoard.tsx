@@ -1,59 +1,73 @@
-import { useState, useEffect } from "react";
+import React, { useState } from "react";
 import KanbanColumn from "./KanbanColumn";
 
-interface Card {
-  id: number; // Keep id as a number
+// Define types for Kanban
+type KanbanTask = {
+  id: string;
   title: string;
-  content?: string;
-}
+  description: string;
+  tags: string;
+  dueDate: string;
+};
 
-interface List {
-  id: number;
+type KanbanColumnType = {
+  id: string;
   title: string;
-  cards: Card[];
-}
+  cards: KanbanTask[];
+};
 
-interface Board {
-  id: number;
+type KanbanBoardProps = {
+  initialColumns?: KanbanColumnType[];
+  id: string;
   title: string;
-  lists: List[];
-}
+};
 
-export default function KanbanBoard() {
-  const [boards, setBoards] = useState<Board[]>([]);
+const KanbanBoard: React.FC<KanbanBoardProps> = ({ initialColumns }) => {
+  // Initialize state with default or provided columns
+  const [columns, setColumns] = useState<KanbanColumnType[]>(
+    initialColumns || [
+      { id: "1", title: "To Do", cards: [] },
+      { id: "2", title: "In Progress", cards: [] },
+      { id: "3", title: "Completed", cards: [] },
+    ]
+  );
 
-  useEffect(() => {
-    const fetchBoards = async () => {
-      const res = await fetch("/api/boards");
-      if (res.ok) {
-        const data = await res.json();
-        setBoards(data.data);
-      }
-    };
+  // Function to delete a task from a column
+  const deleteTask = (columnId: string, taskId: string) => {
+    setColumns((prevColumns) =>
+      prevColumns.map((column) =>
+        column.id === columnId
+          ? { ...column, cards: column.cards.filter((card) => card.id !== taskId) }
+          : column
+      )
+    );
+  };
 
-    fetchBoards();
-  }, []);
+  // Function to add a task to a column
+  const addTask = (columnId: string, task: KanbanTask) => {
+    setColumns((prevColumns) =>
+      prevColumns.map((column) =>
+        column.id === columnId
+          ? { ...column, cards: [...column.cards, task] }
+          : column
+      )
+    );
+  };
 
   return (
-    <div>
-      <h1>Your Boards</h1>
-      {boards.map((board) => (
-        <div key={board.id}>
-          <h2>{board.title}</h2>
-          <div style={{ display: "flex", gap: "20px" }}>
-            {board.lists.map((list) => (
-              <KanbanColumn
-                key={list.id}
-                title={list.title}
-                cards={list.cards.map((card) => ({
-                  ...card,
-                  id: card.id.toString(), // Convert id to string
-                }))}
-              />
-            ))}
-          </div>
-        </div>
+    <div className="">
+      {columns.map((column) => (
+        <KanbanColumn
+          key={column.id}
+          title={column.title}
+          columnId={column.id}
+          cards={column.cards}
+          deleteTask={deleteTask}
+          addTask={addTask}
+        />
       ))}
     </div>
   );
-}
+};
+
+export default KanbanBoard;
