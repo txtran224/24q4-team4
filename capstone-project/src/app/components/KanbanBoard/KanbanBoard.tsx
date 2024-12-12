@@ -17,6 +17,7 @@ type KanbanColumnType = {
 };
 
 type KanbanBoardProps = {
+  id: string;
   title: string;
 };
 
