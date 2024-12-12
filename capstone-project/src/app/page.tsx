@@ -7,11 +7,10 @@ import HomePage from "./components/HomePage";
 const Page: React.FC = () => {
   return (
     <div>
-      <SignedIn>
-        <HomePage />
-      </SignedIn>
       <SignedOut>
-        <h1>LOL DIE</h1>
+        <SignedIn>
+          <HomePage />
+        </SignedIn>
       </SignedOut>
     </div>
   );
