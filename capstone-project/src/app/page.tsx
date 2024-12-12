@@ -8,9 +8,7 @@ const Page: React.FC = () => {
   return (
     <div>
       <SignedOut>
-        <SignedIn>
-          <HomePage />
-        </SignedIn>
+        <HomePage />
       </SignedOut>
     </div>
   );
