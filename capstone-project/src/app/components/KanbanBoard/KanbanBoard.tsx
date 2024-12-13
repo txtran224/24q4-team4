@@ -71,18 +71,31 @@ const KanbanBoard: React.FC<KanbanBoardProps> = ({ title }) => {
     if (!newTask.title || !newTask.description) return;
 
     try {
-      const response = await fetch("/api/boards", {
+      console.log(newTask.title);
+      console.log(newTask.description);
+      console.log(newTask.dueDate);
+
+      const response = await fetch("/api/cards", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           title: newTask.title,
           description: newTask.description,
           dueDate: newTask.dueDate,
-          boardId: 1, // Replace 1 with the actual boardId, dynamically if needed
+          boardId: 1, // Replace with dynamic boardId if needed
         }),
       });
 
-      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+
+      const responseText = await response.text();
+      if (!responseText) {
+        throw new Error("Empty response body");
+      }
+
+      const data = JSON.parse(responseText);
       console.log("API Response:", data);
 
       if (data.success) {

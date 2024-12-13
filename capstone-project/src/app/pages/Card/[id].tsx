@@ -4,7 +4,7 @@ import { useRouter } from "next/router";
 import React from "react";
 import KanbanCard from "@/app/components/KanbanBoard/KanbanCard"; // Ensure this path is correct
 import { GetServerSidePropsContext } from "next";
-import { prisma } from "@/lib/prisma"; // Ensure the Prisma instance is imported correctly
+import prisma from "@/lib/prisma"; // Ensure the Prisma instance is imported correctly
 
 // Define the type for the task
 type Task = {
