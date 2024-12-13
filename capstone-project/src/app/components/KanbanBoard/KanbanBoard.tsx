@@ -78,6 +78,7 @@ const KanbanBoard: React.FC<KanbanBoardProps> = ({ title }) => {
           title: newTask.title,
           description: newTask.description,
           dueDate: newTask.dueDate,
+          boardId: 1, // Replace 1 with the actual boardId, dynamically if needed
         }),
       });
 
