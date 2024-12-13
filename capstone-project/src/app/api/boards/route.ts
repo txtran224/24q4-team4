@@ -6,10 +6,6 @@ import { getAuth } from "@clerk/nextjs/server";
 const response = (data: unknown, status: number = 200) =>
   NextResponse.json(data, { status });
 
-// Type definition for creating a board
-interface CreateBoardRequest {
-  title: string;
-}
 
 // Get all boards for the authenticated user
 export async function GET(request: NextRequest) {
