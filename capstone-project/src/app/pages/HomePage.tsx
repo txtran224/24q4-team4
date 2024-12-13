@@ -4,7 +4,17 @@ import { UserButton } from "@clerk/nextjs";
 import Link from "next/link";
 import { useState } from "react";
 export default function HomePage() {
-  const handleCreateBoard = (event: React.FormEvent) => {
+  const handleCreateBoard = async (event: React.FormEvent) => {
+    console.log("TESTTTTTTTT");
+    const title = boardName;
+    await fetch("/api/boards", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        title,
+      }),
+    });
+
     event.preventDefault();
   };
 
@@ -60,6 +70,7 @@ export default function HomePage() {
             />
             <Link href={`pages/Board?q=${encodeURIComponent(boardName)}`}>
               <button
+                onClick={handleCreateBoard}
                 type="submit"
                 className="w-full rounded-lg bg-gradient-to-r from-teal-500 to-blue-600 px-6 py-3 text-lg font-semibold text-white shadow-lg transition-all transform hover:scale-105 hover:from-teal-600 hover:to-blue-700 focus:outline-none focus:ring-4 focus:ring-teal-300 dark:focus:ring-teal-500"
               >

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { prisma } from "@/lib/prisma";
+import prisma from "@/lib/prisma";
 import { getAuth } from "@clerk/nextjs/server";
 
 // Helper function for JSON responses
@@ -40,18 +40,16 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 401 });
     }
 
-    const { title, description, dueDate, boardId } = await request.json();
+    const { title } = await request.json();
 
-    if (!title || !boardId) {
-      return NextResponse.json({ success: false, error: "Title and boardId are required" }, { status: 400 });
+    if (!title) {
+      return NextResponse.json({ success: false, error: "Title is required" }, { status: 400 });
     }
 
-    const newCard = await prisma.card.create({
+    const newCard = await prisma.board.create({
       data: {
+        userId,
         title,
-        content: description,
-        boardId,
-        createdAt: new Date(dueDate),
       },
     });
 

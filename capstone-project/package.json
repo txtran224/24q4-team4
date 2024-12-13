@@ -13,6 +13,8 @@
   },
   "dependencies": {
     "@clerk/nextjs": "^6.9.1",
+    "@libsql/client": "^0.8.1",
+    "@prisma/adapter-libsql": "^6.0.1",
     "@rive-app/react-canvas": "^4.16.7",
     "dotenv": "^16.4.7",
     "next": "15.0.3",
@@ -25,7 +27,7 @@
     "@babel/preset-env": "^7.26.0",
     "@babel/preset-react": "^7.26.3",
     "@babel/preset-typescript": "^7.26.0",
-    "@prisma/client": "6.0.1",
+    "@prisma/client": "^6.0.1",
     "@swc/jest": "^0.2.37",
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/react": "^16.1.0",
@@ -40,7 +42,7 @@
     "jest": "^29.7.0",
     "jest-environment-jsdom": "^29.7.0",
     "postcss": "^8",
-    "prisma": "6.0.1",
+    "prisma": "^6.0.1",
     "tailwindcss": "^3.4.1",
     "ts-jest": "^29.2.5",
     "typescript": "^5.7.2"
