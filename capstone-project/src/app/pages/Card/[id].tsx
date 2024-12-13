@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/router";
 import React from "react";
-import KanbanCard from "@/app/components/KanbanBoard/KanbanCard"; // Adjust the import path
+import KanbanCard from "@/app/components/KanbanBoard/KanbanCard"; // Ensure this path is correct
 import { GetServerSidePropsContext } from "next";
 import { prisma } from "@/lib/prisma"; // Ensure the Prisma instance is imported correctly
 
@@ -11,8 +11,7 @@ type Task = {
   id: number;
   title: string;
   description: string;
-  tags?: string;
-  deadline: string; // Use string if date is serialized as string
+  dueDate: string; // Use string if the date is serialized as a string
 };
 
 // Define the props for the TaskPage component
@@ -34,7 +33,7 @@ const TaskPage: React.FC<TaskPageProps> = ({ task }) => {
         id={task.id.toString()}
         title={task.title}
         description={task.description}
-        dueDate={new Date(task.deadline).toLocaleDateString()}
+        dueDate={new Date(task.dueDate).toLocaleDateString()}
         onDelete={() => router.push("/")} // Temporary onDelete action to navigate back
       />
       <button
@@ -47,12 +46,19 @@ const TaskPage: React.FC<TaskPageProps> = ({ task }) => {
   );
 };
 
+// Fetch task data on the server-side
 export async function getServerSideProps(context: GetServerSidePropsContext) {
   const { taskId } = context.params!; // Non-null assertion since taskId is required
 
   try {
     const task = await prisma.card.findUnique({
       where: { id: parseInt(taskId as string) },
+      select: {
+        id: true,
+        title: true,
+        description: true,
+        dueDate: true,
+      },
     });
 
     if (!task) {
