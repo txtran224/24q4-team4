@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import KanbanCard from "./KanbanCard";
+import router from "next/router";
 
 type KanbanTask = {
   id: string;
@@ -101,13 +102,11 @@ const KanbanBoard: React.FC<KanbanBoardProps> = ({ title }) => {
   // Delete task and remove from backend
   const handleDeleteTask = async (columnId: string, taskId: string) => {
     try {
-      const response = await fetch(`/api/boards?id=${taskId}`, {
+      const response = await fetch(`/api/tasks?id=${taskId}`, {
         method: "DELETE",
       });
 
-      const data = await response.json();
-
-      if (data.success) {
+      if (response.ok) {
         setColumns((prevColumns) =>
           prevColumns.map((column) =>
             column.id === columnId
@@ -118,6 +117,8 @@ const KanbanBoard: React.FC<KanbanBoardProps> = ({ title }) => {
               : column
           )
         );
+      } else {
+        console.error("Failed to delete task");
       }
     } catch (error) {
       console.error("Error deleting task:", error);
@@ -139,13 +140,14 @@ const KanbanBoard: React.FC<KanbanBoardProps> = ({ title }) => {
               {column.title}
             </h2>
             <div className="flex flex-col gap-4 p-4 h-96 overflow-y-auto">
-              {column.cards.map((card) => (
+              {column.cards.map((task) => (
                 <KanbanCard
-                  key={card.id}
-                  title={card.title}
-                  description={card.description}
-                  dueDate={card.dueDate}
-                  onDelete={() => handleDeleteTask(column.id, card.id)}
+                  key={task.id}
+                  id={task.id}
+                  title={task.title}
+                  description={task.description}
+                  dueDate={task.dueDate}
+                  onDelete={() => handleDeleteTask(column.id, task.id)} // Pass both arguments
                 />
               ))}
             </div>

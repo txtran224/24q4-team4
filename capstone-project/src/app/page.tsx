@@ -7,9 +7,7 @@ import HomePage from "./components/HomePage";
 const Page: React.FC = () => {
   return (
     <div>
-      <SignedOut>
-        <HomePage />
-      </SignedOut>
+      <HomePage />
     </div>
   );
 };
