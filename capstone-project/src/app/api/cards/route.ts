@@ -46,7 +46,7 @@ export async function POST(request: NextRequest) {
       data: {
         title,
         content,
-        boardId,
+        boardId, 
       },
     });
 
@@ -57,7 +57,6 @@ export async function POST(request: NextRequest) {
   }
 }
 
-// Delete a card by ID
 export async function DELETE(request: NextRequest) {
   const { userId } = await getAuth(request);
   const cardId = request.nextUrl.searchParams.get("id");
@@ -71,20 +70,13 @@ export async function DELETE(request: NextRequest) {
   }
 
   try {
-    // Find the board that belongs to the authenticated user
-    const board = await prisma.board.findFirst({
-      where: { userId },
-    });
-
-    if (!board) {
-      return response({ error: "Board not found or unauthorized" }, 404);
-    }
-
-    // Ensure the card belongs to the authenticated user's board
+    // Ensure the card belongs to the authenticated user via the board relation
     const card = await prisma.card.findFirst({
       where: {
         id: parseInt(cardId),
-        boardId: board.id,
+        board: {
+          userId, // Verify ownership through the board
+        },
       },
     });
 

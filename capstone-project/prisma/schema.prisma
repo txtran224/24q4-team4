@@ -1,29 +1,27 @@
-// prisma/schema.prisma
+generator client {
+  provider = "prisma-client-js"
+}
 
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
-generator client {
-  provider = "prisma-client-js"
-}
-
 model Board {
   id        Int      @id @default(autoincrement())
   title     String
-  userId    String
-  cards     Card[]   // One-to-many relationship with Card
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  userId    String
+  cards     Card[]
 }
 
 model Card {
   id        Int      @id @default(autoincrement())
   title     String
   content   String?
-  boardId   Int      // Foreign key to Board
-  board     Board    @relation(fields: [boardId], references: [id])
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  boardId   Int
+  board     Board    @relation(fields: [boardId], references: [id])
 }
