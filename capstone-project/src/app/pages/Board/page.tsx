@@ -1,4 +1,3 @@
-// src/app/pages/Board/page.tsx
 
 "use client";
 
@@ -8,6 +7,7 @@ import KanbanBoard from "../../components/KanbanBoard/KanbanBoard";
 import { useSearchParams } from "next/navigation";
 
 const KanbanPageContent = () => {
+
   const searchParams = useSearchParams();
   const title = searchParams.get("q") || "Untitled Board";
 
@@ -39,5 +39,4 @@ const KanbanPage = () => (
     <KanbanPageContent />
   </Suspense>
 );
-
 export default KanbanPage;
