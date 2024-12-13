@@ -71,7 +71,7 @@ const KanbanBoard: React.FC<KanbanBoardProps> = ({ title }) => {
     if (!newTask.title || !newTask.description) return;
 
     try {
-      const response = await fetch("/api/boards", {
+      const response = await fetch("/api/cards", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -82,9 +82,7 @@ const KanbanBoard: React.FC<KanbanBoardProps> = ({ title }) => {
       });
 
       const data = await response.json();
-
-      console.log("-----------DATA HERE--------");
-      console.log(data);
+      console.log("API Response:", data);
 
       if (data.success) {
         setColumns((prevColumns) =>
@@ -96,6 +94,8 @@ const KanbanBoard: React.FC<KanbanBoardProps> = ({ title }) => {
         );
 
         setNewTask({ id: "", title: "", description: "", dueDate: "" });
+      } else {
+        console.error("Error adding task:", data.error);
       }
     } catch (error) {
       console.error("Error adding task:", error);
