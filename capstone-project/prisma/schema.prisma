@@ -1,39 +1,27 @@
-// prisma/schema.prisma
-
-datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
-}
-
 generator client {
   provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
 }
 
 model Board {
   id        Int      @id @default(autoincrement())
   title     String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
   userId    String
-  lists     List[]
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-}
-
-model List {
-  id        Int      @id @default(autoincrement())
-  title     String
-  boardId   Int
-  board     Board    @relation(fields: [boardId], references: [id])
   cards     Card[]
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
 }
 
 model Card {
   id        Int      @id @default(autoincrement())
   title     String
   content   String?
-  listId    Int
-  list      List     @relation(fields: [listId], references: [id])
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  boardId   Int
+  board     Board    @relation(fields: [boardId], references: [id])
 }

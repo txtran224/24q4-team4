@@ -17,6 +17,7 @@ type KanbanColumnType = {
 };
 
 type KanbanBoardProps = {
+  id: string;
   title: string;
 };
 
@@ -44,6 +45,7 @@ const KanbanBoard: React.FC<KanbanBoardProps> = ({ title }) => {
 
         // Check if the response is OK before parsing as JSON
         if (!response.ok) {
+          console.log(response);
           throw new Error(`HTTP error! Status: ${response.status}`);
         }
 
@@ -69,17 +71,19 @@ const KanbanBoard: React.FC<KanbanBoardProps> = ({ title }) => {
     if (!newTask.title || !newTask.description) return;
 
     try {
-      const response = await fetch("/api/boards", {
+      const response = await fetch("/api/cards", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           title: newTask.title,
           description: newTask.description,
           dueDate: newTask.dueDate,
+          boardId: 1, // Replace 1 with the actual boardId, dynamically if needed
         }),
       });
 
       const data = await response.json();
+      console.log("API Response:", data);
 
       if (data.success) {
         setColumns((prevColumns) =>
@@ -91,6 +95,8 @@ const KanbanBoard: React.FC<KanbanBoardProps> = ({ title }) => {
         );
 
         setNewTask({ id: "", title: "", description: "", dueDate: "" });
+      } else {
+        console.error("Error adding task:", data.error);
       }
     } catch (error) {
       console.error("Error adding task:", error);
@@ -100,13 +106,11 @@ const KanbanBoard: React.FC<KanbanBoardProps> = ({ title }) => {
   // Delete task and remove from backend
   const handleDeleteTask = async (columnId: string, taskId: string) => {
     try {
-      const response = await fetch(`/api/boards?id=${taskId}`, {
+      const response = await fetch(`/api/tasks?id=${taskId}`, {
         method: "DELETE",
       });
 
-      const data = await response.json();
-
-      if (data.success) {
+      if (response.ok) {
         setColumns((prevColumns) =>
           prevColumns.map((column) =>
             column.id === columnId
@@ -117,6 +121,8 @@ const KanbanBoard: React.FC<KanbanBoardProps> = ({ title }) => {
               : column
           )
         );
+      } else {
+        console.error("Failed to delete task");
       }
     } catch (error) {
       console.error("Error deleting task:", error);
@@ -138,13 +144,14 @@ const KanbanBoard: React.FC<KanbanBoardProps> = ({ title }) => {
               {column.title}
             </h2>
             <div className="flex flex-col gap-4 p-4 h-96 overflow-y-auto">
-              {column.cards.map((card) => (
+              {column.cards.map((task) => (
                 <KanbanCard
-                  key={card.id}
-                  title={card.title}
-                  description={card.description}
-                  dueDate={card.dueDate}
-                  onDelete={() => handleDeleteTask(column.id, card.id)}
+                  key={task.id}
+                  id={task.id}
+                  title={task.title}
+                  description={task.description}
+                  dueDate={task.dueDate}
+                  onDelete={() => handleDeleteTask(column.id, task.id)} // Pass both arguments
                 />
               ))}
             </div>

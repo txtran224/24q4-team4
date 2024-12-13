@@ -1,0 +1,12 @@
+{
+    "build": {
+      "env": {
+        "DATABASE_URL": "file:./dev.db"
+      }
+    },
+        "functions": {
+          "src/app/api/*": {
+            "memory": 1024
+          }
+        }
+      }

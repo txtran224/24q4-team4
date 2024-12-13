@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import { ClerkProvider } from "@clerk/nextjs";
+import { ClerkProvider, SignInButton } from "@clerk/nextjs";
 
 export const metadata: Metadata = {
   title: "The Kanban App",
@@ -15,7 +15,16 @@ export default function RootLayout({
   return (
     <ClerkProvider>
       <html lang="en">
-        <body>{children}</body>
+        <body>
+          <div>{children}</div>
+          <div className="fixed bottom-4 right-4">
+            <SignInButton>
+              <button className="bg-blue-500 text-white px-4 py-2 rounded">
+                Sign In
+              </button>
+            </SignInButton>
+          </div>
+        </body>
       </html>
     </ClerkProvider>
   );

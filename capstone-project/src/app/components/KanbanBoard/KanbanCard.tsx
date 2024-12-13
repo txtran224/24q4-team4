@@ -3,6 +3,7 @@
 import React from "react";
 
 type KanbanCardProps = {
+  id: string;
   title: string;
   description: string;
   dueDate: string;
