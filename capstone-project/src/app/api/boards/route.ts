@@ -14,7 +14,7 @@ interface CreateBoardRequest {
 // Get all boards for the authenticated user
 export async function GET(request: NextRequest) {
   try {
-    const { userId } = await getAuth(request); // Ensure getAuth is awaited
+    const { userId } = await getAuth(request);
 
     console.log("Authenticated User ID:", userId);
 
@@ -25,13 +25,6 @@ export async function GET(request: NextRequest) {
 
     const boards = await prisma.board.findMany({
       where: { userId },
-      include: {
-        lists: {
-          include: {
-            cards: true,
-          },
-        },
-      },
     });
 
     console.log("Fetched Boards:", boards);
@@ -45,7 +38,7 @@ export async function GET(request: NextRequest) {
 // Create a new board for the authenticated user
 export async function POST(request: NextRequest) {
   try {
-    const { userId } = await getAuth(request); // Ensure getAuth is awaited
+    const { userId } = await getAuth(request);
 
     console.log("Authenticated User ID:", userId);
 
@@ -83,7 +76,7 @@ export async function POST(request: NextRequest) {
 // Delete a board by ID for the authenticated user
 export async function DELETE(request: NextRequest) {
   try {
-    const { userId } = await getAuth(request); // Ensure getAuth is awaited
+    const { userId } = await getAuth(request);
     const boardId = request.nextUrl.searchParams.get("id");
 
     console.log("Authenticated User ID:", userId);
@@ -98,20 +91,17 @@ export async function DELETE(request: NextRequest) {
       return response({ success: false, error: "Board ID is required" }, 400);
     }
 
-    // Find the board to ensure it belongs to the authenticated user
     const board = await prisma.board.findFirst({
       where: {
         id: parseInt(boardId),
-        userId, // Filter by userId
+        userId,
       },
     });
 
     if (!board) {
-      console.warn("Board not found or unauthorized deletion attempt");
       return response({ success: false, error: "Board not found or you do not have permission to delete it" }, 404);
     }
 
-    // Delete the board
     await prisma.board.delete({
       where: { id: board.id },
     });
@@ -123,9 +113,11 @@ export async function DELETE(request: NextRequest) {
     return response({ success: false, error: "Failed to delete board" }, 500);
   }
 }
+
+// Update a board for the authenticated user
 export async function PUT(request: NextRequest) {
   try {
-    const { userId } = getAuth(request);
+    const { userId } = await getAuth(request);
 
     if (!userId) {
       return response({ success: false, error: "Unauthorized" }, 401);
@@ -143,7 +135,6 @@ export async function PUT(request: NextRequest) {
       return response({ success: false, error: "Title is required" }, 400);
     }
 
-    // Step 1: Verify ownership
     const board = await prisma.board.findFirst({
       where: {
         id: parseInt(boardId),
@@ -155,9 +146,8 @@ export async function PUT(request: NextRequest) {
       return response({ success: false, error: "Board not found or you do not have permission to update it" }, 404);
     }
 
-    // Step 2: Update the board
     const updatedBoard = await prisma.board.update({
-      where: { id: parseInt(boardId) }, // Use only the unique 'id'
+      where: { id: parseInt(boardId) },
       data: { title },
     });
 

@@ -10,12 +10,12 @@ const response = (data: unknown, status: number = 200) =>
 interface CreateCardRequest {
   title: string;
   content?: string;
-  listId: number;
+  boardId: number;
 }
 
-// Create a new card in a list
+// Create a new card in a board
 export async function POST(request: NextRequest) {
-  const { userId } = getAuth(request);
+  const { userId } = await getAuth(request);
 
   if (!userId) {
     return response({ error: "Unauthorized" }, 401);
@@ -23,24 +23,22 @@ export async function POST(request: NextRequest) {
 
   try {
     const body = (await request.json()) as CreateCardRequest;
-    const { title, content, listId } = body;
+    const { title, content, boardId } = body;
 
-    if (!title || !listId) {
-      return response({ error: "Title and listId are required" }, 400);
+    if (!title || !boardId) {
+      return response({ error: "Title and boardId are required" }, 400);
     }
 
-    // Ensure the list belongs to the authenticated user
-    const list = await prisma.list.findFirst({
+    // Ensure the board belongs to the authenticated user
+    const board = await prisma.board.findFirst({
       where: {
-        id: listId,
-        board: {
-          userId, // Verify ownership through the board
-        },
+        id: boardId,
+        userId,
       },
     });
 
-    if (!list) {
-      return response({ error: "List not found or unauthorized" }, 404);
+    if (!board) {
+      return response({ error: "Board not found or unauthorized" }, 404);
     }
 
     // Create the new card
@@ -48,7 +46,7 @@ export async function POST(request: NextRequest) {
       data: {
         title,
         content,
-        listId,
+        boardId,
       },
     });
 
@@ -58,9 +56,10 @@ export async function POST(request: NextRequest) {
     return response({ error: "Failed to create card" }, 500);
   }
 }
+
 // Delete a card by ID
 export async function DELETE(request: NextRequest) {
-  const { userId } = getAuth(request);
+  const { userId } = await getAuth(request);
   const cardId = request.nextUrl.searchParams.get("id");
 
   if (!userId) {
@@ -72,15 +71,20 @@ export async function DELETE(request: NextRequest) {
   }
 
   try {
-    // Ensure the card belongs to the authenticated user
+    // Find the board that belongs to the authenticated user
+    const board = await prisma.board.findFirst({
+      where: { userId },
+    });
+
+    if (!board) {
+      return response({ error: "Board not found or unauthorized" }, 404);
+    }
+
+    // Ensure the card belongs to the authenticated user's board
     const card = await prisma.card.findFirst({
       where: {
         id: parseInt(cardId),
-        list: {
-          board: {
-            userId, // Verify ownership through the board
-          },
-        },
+        boardId: board.id,
       },
     });
 
