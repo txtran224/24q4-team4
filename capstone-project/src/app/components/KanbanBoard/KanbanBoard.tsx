@@ -45,6 +45,7 @@ const KanbanBoard: React.FC<KanbanBoardProps> = ({ title }) => {
 
         // Check if the response is OK before parsing as JSON
         if (!response.ok) {
+          console.log(response);
           throw new Error(`HTTP error! Status: ${response.status}`);
         }
 
@@ -81,6 +82,9 @@ const KanbanBoard: React.FC<KanbanBoardProps> = ({ title }) => {
       });
 
       const data = await response.json();
+
+      console.log("-----------DATA HERE--------");
+      console.log(data);
 
       if (data.success) {
         setColumns((prevColumns) =>
