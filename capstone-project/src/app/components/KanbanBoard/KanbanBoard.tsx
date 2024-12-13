@@ -2,7 +2,6 @@
 
 import React, { useState, useEffect } from "react";
 import KanbanCard from "./KanbanCard";
-import router from "next/router";
 
 type KanbanTask = {
   id: string;
