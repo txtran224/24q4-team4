@@ -1,10 +1,13 @@
+// src/app/pages/Board/page.tsx
+
 "use client";
 
-import { useSearchParams } from "next/navigation";
-import Link from "next/link"; // Import Link from next/link
+import { Suspense } from "react";
+import Link from "next/link";
 import KanbanBoard from "../../components/KanbanBoard/KanbanBoard";
+import { useSearchParams } from "next/navigation";
 
-const KanbanPage = () => {
+const KanbanPageContent = () => {
   const searchParams = useSearchParams();
   const title = searchParams.get("q") || "Untitled Board";
 
@@ -30,5 +33,11 @@ const KanbanPage = () => {
     </div>
   );
 };
+
+const KanbanPage = () => (
+  <Suspense fallback={<div className="text-white text-center">Loading...</div>}>
+    <KanbanPageContent />
+  </Suspense>
+);
 
 export default KanbanPage;

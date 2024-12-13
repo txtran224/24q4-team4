@@ -45,6 +45,7 @@ const KanbanBoard: React.FC<KanbanBoardProps> = ({ title }) => {
 
         // Check if the response is OK before parsing as JSON
         if (!response.ok) {
+          console.log(response);
           throw new Error(`HTTP error! Status: ${response.status}`);
         }
 
@@ -70,17 +71,19 @@ const KanbanBoard: React.FC<KanbanBoardProps> = ({ title }) => {
     if (!newTask.title || !newTask.description) return;
 
     try {
-      const response = await fetch("/api/boards", {
+      const response = await fetch("/api/cards", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           title: newTask.title,
           description: newTask.description,
           dueDate: newTask.dueDate,
+          boardId: 1, // Replace 1 with the actual boardId, dynamically if needed
         }),
       });
 
       const data = await response.json();
+      console.log("API Response:", data);
 
       if (data.success) {
         setColumns((prevColumns) =>
@@ -92,6 +95,8 @@ const KanbanBoard: React.FC<KanbanBoardProps> = ({ title }) => {
         );
 
         setNewTask({ id: "", title: "", description: "", dueDate: "" });
+      } else {
+        console.error("Error adding task:", data.error);
       }
     } catch (error) {
       console.error("Error adding task:", error);

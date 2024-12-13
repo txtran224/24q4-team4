@@ -6,10 +6,6 @@ import { getAuth } from "@clerk/nextjs/server";
 const response = (data: unknown, status: number = 200) =>
   NextResponse.json(data, { status });
 
-// Type definition for creating a board
-interface CreateBoardRequest {
-  title: string;
-}
 
 // Get all boards for the authenticated user
 export async function GET(request: NextRequest) {
@@ -40,36 +36,29 @@ export async function POST(request: NextRequest) {
   try {
     const { userId } = await getAuth(request);
 
-    console.log("Authenticated User ID:", userId);
-
     if (!userId) {
-      console.warn("Unauthorized access attempt");
-      return response({ success: false, error: "Unauthorized" }, 401);
+      return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 401 });
     }
 
-    const body = (await request.json()) as CreateBoardRequest;
-    const { title } = body;
+    const { title, description, dueDate, boardId } = await request.json();
 
-    if (!title) {
-      return response({ success: false, error: "Title is required" }, 400);
+    if (!title || !boardId) {
+      return NextResponse.json({ success: false, error: "Title and boardId are required" }, { status: 400 });
     }
 
-    if (title.length > 100) {
-      return response({ success: false, error: "Title must be 100 characters or fewer" }, 400);
-    }
-
-    const newBoard = await prisma.board.create({
+    const newCard = await prisma.card.create({
       data: {
         title,
-        userId,
+        content: description,
+        boardId,
+        createdAt: new Date(dueDate),
       },
     });
 
-    console.log("Created Board:", newBoard);
-    return response({ success: true, data: newBoard }, 201);
+    return NextResponse.json({ success: true, data: newCard }, { status: 201 });
   } catch (error) {
-    console.error("Error creating board:", error);
-    return response({ success: false, error: "Failed to create board" }, 500);
+    console.error("Error creating card:", error);
+    return NextResponse.json({ success: false, error: "Failed to create card" }, { status: 500 });
   }
 }
 
