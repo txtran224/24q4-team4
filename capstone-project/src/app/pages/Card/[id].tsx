@@ -56,8 +56,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
       select: {
         id: true,
         title: true,
-        description: true,
-        dueDate: true,
+        content: true,
       },
     });
 

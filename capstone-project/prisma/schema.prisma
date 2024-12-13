@@ -13,17 +13,7 @@ model Board {
   id        Int      @id @default(autoincrement())
   title     String
   userId    String
-  lists     List[]
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-}
-
-model List {
-  id        Int      @id @default(autoincrement())
-  title     String
-  boardId   Int
-  board     Board    @relation(fields: [boardId], references: [id])
-  cards     Card[]
+  cards     Card[]   // One-to-many relationship with Card
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
@@ -32,8 +22,8 @@ model Card {
   id        Int      @id @default(autoincrement())
   title     String
   content   String?
-  listId    Int
-  list      List     @relation(fields: [listId], references: [id])
+  boardId   Int      // Foreign key to Board
+  board     Board    @relation(fields: [boardId], references: [id])
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
