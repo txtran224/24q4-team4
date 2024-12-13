@@ -12,7 +12,7 @@
     "test:coverage": "jest --coverage"
   },
   "dependencies": {
-    "@clerk/nextjs": "^5.7.5",
+    "@clerk/nextjs": "^6.9.1",
     "@rive-app/react-canvas": "^4.16.7",
     "dotenv": "^16.4.7",
     "next": "15.0.3",
